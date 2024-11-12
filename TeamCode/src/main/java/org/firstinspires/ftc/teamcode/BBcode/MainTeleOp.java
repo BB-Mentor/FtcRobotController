@@ -139,7 +139,7 @@ public class MainTeleOp extends LinearOpMode{
         telemetry.setAutoClear(false);
         //Init for the other classes this opmode pulls methods from
         MecanumDrivetrain drivetrain = new MecanumDrivetrain(this);
-        Arm arm = new Arm(this, telemetryHelper);
+        Arm arm = new Arm(this);
         Viper viper = new Viper(this);
         WristClaw wristClaw = new WristClaw(this);
         arm.Reset();

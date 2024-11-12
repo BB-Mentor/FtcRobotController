@@ -8,10 +8,10 @@ public class Arm {
     OpMode _opMode;
     DcMotorEx _armMotor;
     TelemetryHelper _telemetryHelper;
-    public Arm (OpMode opMode, TelemetryHelper telemetryHelper)
+    public Arm (OpMode opMode)
     {
         _opMode = opMode;
-        _telemetryHelper = telemetryHelper;
+        _telemetryHelper = new TelemetryHelper(opMode);
         _armMotor = _opMode.hardwareMap.tryGet(DcMotorEx.class, "armMotor");
         _telemetryHelper.initMotorTelemetry( _armMotor, "AM");
 

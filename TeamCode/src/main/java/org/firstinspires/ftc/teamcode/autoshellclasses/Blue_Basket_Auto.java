@@ -2,81 +2,85 @@ package org.firstinspires.ftc.teamcode.autoshellclasses;
 import androidx.annotation.NonNull;
 
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 
 import org.bluebananas.ftc.roadrunneractions.ActionBuilder;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.BBcode.Arm;
+import org.firstinspires.ftc.teamcode.BBcode.TelemetryHelper;
+import org.firstinspires.ftc.teamcode.BBcode.Viper;
 import org.firstinspires.ftc.teamcode.BBcode.WristClaw;
-import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.PinpointDrive;
-import org.firstinspires.ftc.vision.VisionPortal;
 
 
 @Config
 @Autonomous(name = "Blue_Basket_Auto", group = "Autonomous")
 public class Blue_Basket_Auto extends LinearOpMode {
-    public class clawWrist {
-        private Servo wrist;
-        private Servo claw;
 
-        public clawWrist(HardwareMap hardwareMap) {
-            wrist = hardwareMap.get(Servo.class, "wrist");
-            claw = hardwareMap.get(Servo.class, "claw");
+    public class ClawWristActions {
+//        private Servo wrist;
+//        private Servo claw;
+        private final WristClaw wristClaw;
+//        public clawWrist(HardwareMap hardwareMap) {
+//            wrist = hardwareMap.get(Servo.class, "wrist");
+//            claw = hardwareMap.get(Servo.class, "claw");
+//        }
+        public ClawWristActions(OpMode opMode) {
+            wristClaw = new WristClaw(opMode);
         }
 
-
-        public class openClaw implements Action {
+        public class OpenClawAction implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                claw.setPosition(0.57);
+                //claw.setPosition(0.57);
+                wristClaw.OpenClaw();
                 return false;
             }
         }
         public Action OpenClaw() {
-            return new openClaw();
+            return new OpenClawAction();
         }
 
-        public class closeClaw implements Action {
+        public class CloseClawAction implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                claw.setPosition(0.2);
+                //claw.setPosition(0.2);
+                wristClaw.CloseClaw();
                 return false;
             }
         }
         public Action CloseClaw() {
-            return new closeClaw();
+            return new CloseClawAction();
         }
 
-        public class wristDown implements Action {
+        public class WristDownAction implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                wrist.setPosition(.36);
+                //wrist.setPosition(.36);
+                wristClaw.MoveDown();
                 return false;
             }
         }
         public Action WristDown() {
-            return new wristDown();
+            return new WristDownAction();
         }
 
         public class wristUp implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                wrist.setPosition(0.755);
+                //wrist.setPosition(0.755);
+                wristClaw.MoveUp();
                 return false;
             }
         }
@@ -84,30 +88,34 @@ public class Blue_Basket_Auto extends LinearOpMode {
             return new wristUp();
         }
     }
-    public class viperArm {
-        private DcMotor arm;
-        private DcMotor viper;
+    public class ViperArmActions {
+//        private DcMotor arm;
+//        private DcMotor viper;
+        private final Arm arm;
+        private final Viper viper;
 
-        public viperArm(HardwareMap hardwareMap) {
-            arm = hardwareMap.get(DcMotor.class, "armMotor");
-            viper = hardwareMap.get(DcMotor.class, "viperMotor");
+        public ViperArmActions(OpMode opMode) {
+            arm = new Arm(opMode);
+            viper = new Viper(opMode);
         }
 
 
         public class basket implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                arm.setDirection(DcMotor.Direction.REVERSE);
-                arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                arm.setTargetPosition((int)(7125.0/360.0)*80);    //Sets Target Tick Position
-                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                arm.setPower(1);
+//                arm.setDirection(DcMotor.Direction.REVERSE);
+//                arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//                arm.setTargetPosition((int)(7125.0/360.0)*80);    //Sets Target Tick Position
+//                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                arm.setPower(1);
+                arm.MoveToHighBasket();
 
-                viper.setDirection(DcMotor.Direction.REVERSE);
-                int extensionTicks = (int)(537.7/4.625) * 24;
-                viper.setTargetPosition(extensionTicks);    //Sets Target Tick Position
-                viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                viper.setPower(1);
+//                viper.setDirection(DcMotor.Direction.REVERSE);
+//                int extensionTicks = (int)(537.7/4.625) * 24;
+//                viper.setTargetPosition(extensionTicks);    //Sets Target Tick Position
+//                viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                viper.setPower(1);
+                viper.ExtendFull(1);
                 return false;
             }
         }
@@ -118,17 +126,19 @@ public class Blue_Basket_Auto extends LinearOpMode {
         public class floor implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                arm.setDirection(DcMotor.Direction.REVERSE);
-                arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                arm.setTargetPosition(0);    //Sets Target Tick Position
-                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                arm.setPower(.5);
+//                arm.setDirection(DcMotor.Direction.REVERSE);
+//                arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//                arm.setTargetPosition(0);    //Sets Target Tick Position
+//                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                arm.setPower(.5);
+                arm.MoveToHome();
 
-                viper.setDirection(DcMotor.Direction.REVERSE);
-                int extensionTicks = (int)(537.7/4.625) * 3;
-                viper.setTargetPosition(extensionTicks);    //Sets Target Tick Position
-                viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                viper.setPower(1);
+//                viper.setDirection(DcMotor.Direction.REVERSE);
+//                int extensionTicks = (int)(537.7/4.625) * 3;
+//                viper.setTargetPosition(extensionTicks);    //Sets Target Tick Position
+//                viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                viper.setPower(1);
+                viper.ExtendShort(1);
                 return false;
             }
         }
@@ -140,8 +150,8 @@ public class Blue_Basket_Auto extends LinearOpMode {
     }
     @Override
     public void runOpMode() {
-        clawWrist servos = new clawWrist(hardwareMap);
-        viperArm motors = new viperArm(hardwareMap);
+        ClawWristActions servos = new ClawWristActions(this);
+        ViperArmActions motors = new ViperArmActions(this);
 
         Pose2d initialPose = new Pose2d(31, 63, Math.toRadians(0));
         // JOSHUANOTE: Here is where the trajectories are intitialized and defined.

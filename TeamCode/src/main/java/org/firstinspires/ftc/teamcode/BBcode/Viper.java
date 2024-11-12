@@ -7,12 +7,15 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class Viper {
     OpMode _opMode;
     DcMotorEx _viperMotor;
-    DcMotorEx _armMotor;
+    //DcMotorEx _armMotor;
+    TelemetryHelper _telemetryHelper;
     public Viper (OpMode opMode)
     {
         _opMode = opMode;
         _viperMotor = _opMode.hardwareMap.tryGet(DcMotorEx.class, "viperMotor");
-        _armMotor = _opMode.hardwareMap.tryGet(DcMotorEx.class, "armMotor");
+        //_armMotor = _opMode.hardwareMap.tryGet(DcMotorEx.class, "armMotor");
+        _telemetryHelper = new TelemetryHelper(_opMode);
+        _telemetryHelper.initMotorTelemetry( _viperMotor, "Viper");
     }
     //--------------------------
     //Variable Storage:
