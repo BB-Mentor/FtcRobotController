@@ -22,8 +22,8 @@ public class ClawActions {
 
     //----------------------------------------------------------------------------------------------
     //Actions
-    public Action OpenClaw() {return new MoveClawTo(openPosition);}
-    public Action CloseClaw() {return new MoveClawTo(closePosition);}
+    public Action Open() {return new MoveClawTo(openPosition);}
+    public Action Close() {return new MoveClawTo(closePosition);}
 
     //----------------------------------------------------------------------------------------------
     //Base Action
