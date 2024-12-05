@@ -6,51 +6,55 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class ClawActions {
+public class WristActions {
     OpMode _OpMode;
-    Servo _Claw;
+    Servo _Wrist;
 
     //constructor
-    public ClawActions(OpMode opmode) {
+    public WristActions(OpMode opmode) {
         _OpMode = opmode;
-        _Claw = _OpMode.hardwareMap.tryGet(Servo.class, "claw");
+        _Wrist = _OpMode.hardwareMap.tryGet(Servo.class, "wrist");
     }
     //----------------------------------------------------------------------------------------------
-    //Claw Positions
-    double openPosition = 0.57;
-    double closePosition = 0.2;
+    //Wrist Positions
+    double upPosition = 0.855;
+    double downPosition = 0.4725;
+    double dumpPosition = 0.45;
 
     //----------------------------------------------------------------------------------------------
     //Actions
-    public Action Open() {return new MoveClawToAction(openPosition);}
-    public Action Close() {return new MoveClawToAction(closePosition);}
+    public Action MoveToUp() {return new MoveWristToAction(upPosition);}
+    public Action MoveToDown() {return new MoveWristToAction(downPosition);}
+    public Action MoveToDump() {return new MoveWristToAction(dumpPosition);}
 
     //----------------------------------------------------------------------------------------------
     //NonAction functions
     //for RR Action incompatible uses
-    public void OpenNonAction() {MoveClawTo(openPosition);}
-    public void CloseNonAction() {MoveClawTo(openPosition);}
+    public void MoveToUpNonAction() {MoveWristTo(upPosition);}
+    public void MoveToDownNonAction() {MoveWristTo(downPosition);}
+    public void MoveToDumpNonAction() {MoveWristTo(dumpPosition);}
 
     //----------------------------------------------------------------------------------------------
     //Base Action
     //can input any servo position
-    private class MoveClawToAction implements Action {
+    private class MoveWristToAction implements Action {
         double _Position;
-        public MoveClawToAction(double position) {
+        public MoveWristToAction(double position) {
             _Position = position;
         }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            MoveClawTo(_Position);
+            MoveWristTo(_Position);
             return false;
         }
+
     }
-    private void MoveClawTo(double position) {
-        if (_Claw == null) {
-            _OpMode.telemetry.addLine("Claw Servo not found!");
+    private void MoveWristTo(double position) {
+        if (_Wrist == null) {
+            _OpMode.telemetry.addLine("Wrist Servo not found!");
         }
         else {
-            _Claw.setPosition(position);
+            _Wrist.setPosition(position);
         }
     }
 }
