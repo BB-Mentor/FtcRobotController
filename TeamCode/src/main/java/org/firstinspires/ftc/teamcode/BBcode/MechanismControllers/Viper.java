@@ -23,6 +23,10 @@ public class Viper {
     int shortExtend = 3;
     //--------------------------
 
+    public DcMotorEx get_armMotor() {
+        return _viperMotor;
+    }
+
     public void ExtendFull(double power) {ViperMotorCustom(fullExtend, power);}
     public void ExtendShort(double power) {ViperMotorCustom(shortExtend, power);}
     public void ExtendHalf(double power) {ViperMotorCustom(halfExtend, power);}
