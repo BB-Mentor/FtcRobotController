@@ -79,7 +79,7 @@ public class MainTeleOp extends LinearOpMode{
         if ((gamepad.left_trigger > 0 && gamepad.dpad_down) || (desiredViperState == ViperState.Closed && arm.get_armMotor().getCurrentPosition()>1300) ) {
             wristClaw.WristUp();
             desiredViperState = ViperState.Closed;
-            viper.ExtendShort(1);
+            viper.ExtendClosed(1);
             arm.MoveToHome();
         }
 
@@ -155,12 +155,12 @@ public class MainTeleOp extends LinearOpMode{
             //Drive code
             drivetrain.Drive();
 
-            handleGamepad1(arm,viper);
-            handleGamepad2(arm,viper,wristClaw);
-            if (arm.getIsHome())
-            {
-                arm.Stop();
-            }
+//            handleGamepad1(arm,viper);
+//            handleGamepad2(arm,viper,wristClaw);
+//            if (arm.getIsHome())
+//            {
+//                arm.Stop();
+//            }
             telemetry.update();
             //Manual viper code (commented out)
 //            if (Math.abs((gamepad2.right_stick_y)) > 0.2 )
