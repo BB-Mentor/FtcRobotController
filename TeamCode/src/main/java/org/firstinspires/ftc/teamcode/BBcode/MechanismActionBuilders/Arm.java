@@ -7,12 +7,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-public class ArmActions {
+public class Arm {
     OpMode _OpMode;
     DcMotorEx _ArmMotor;
 
     //constructor
-    public ArmActions(OpMode opmode) {
+    public Arm(OpMode opmode) {
         _OpMode = opmode;
         _ArmMotor = _OpMode.hardwareMap.tryGet(DcMotorEx.class, "armMotor");
     }

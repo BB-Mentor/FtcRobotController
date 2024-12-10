@@ -6,12 +6,12 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class ClawActions {
+public class Claw {
     OpMode _OpMode;
     Servo _Claw;
 
     //constructor
-    public ClawActions(OpMode opmode) {
+    public Claw(OpMode opmode) {
         _OpMode = opmode;
         _Claw = _OpMode.hardwareMap.tryGet(Servo.class, "claw");
     }

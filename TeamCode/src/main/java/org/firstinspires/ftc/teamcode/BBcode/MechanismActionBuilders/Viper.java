@@ -7,12 +7,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-public class ViperActions {
+public class Viper {
     OpMode _OpMode;
     DcMotorEx _ViperMotor;
 
     //constructor
-    public ViperActions(OpMode opmode) {
+    public Viper(OpMode opmode) {
         _OpMode = opmode;
         _ViperMotor = _OpMode.hardwareMap.tryGet(DcMotorEx.class, "viperMotor");
     }

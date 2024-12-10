@@ -6,12 +6,12 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class WristActions {
+public class Wrist {
     OpMode _OpMode;
     Servo _Wrist;
 
     //constructor
-    public WristActions(OpMode opmode) {
+    public Wrist(OpMode opmode) {
         _OpMode = opmode;
         _Wrist = _OpMode.hardwareMap.tryGet(Servo.class, "wrist");
     }
@@ -25,14 +25,14 @@ public class WristActions {
     //Actions
     public Action MoveToUp() {return new MoveWristToAction(upPosition);}
     public Action MoveToDown() {return new MoveWristToAction(downPosition);}
-    public Action MoveToDump() {return new MoveWristToAction(dumpPosition);}
+    public Action MoveToBasket() {return new MoveWristToAction(dumpPosition);}
 
     //----------------------------------------------------------------------------------------------
     //NonAction functions
     //for RR Action incompatible uses
     public void MoveToUpNonAction() {MoveWristTo(upPosition);}
     public void MoveToDownNonAction() {MoveWristTo(downPosition);}
-    public void MoveToDumpNonAction() {MoveWristTo(dumpPosition);}
+    public void MoveToBasketNonAction() {MoveWristTo(dumpPosition);}
 
     //----------------------------------------------------------------------------------------------
     //Base Action
