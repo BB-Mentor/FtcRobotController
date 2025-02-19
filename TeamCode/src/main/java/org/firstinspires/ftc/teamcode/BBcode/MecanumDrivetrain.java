@@ -34,6 +34,9 @@ public class MecanumDrivetrain {
     private static final double distanceToleranceInch = .25;
     private boolean isDpad_LeftPressed = false;
     private boolean isDpad_RightPressed = false;
+    private double distanceError = 0;
+    private double maxTeleAutoPower = 0;
+    double targetSlowDownDistance = 24;
 
     // Constructor
     public MecanumDrivetrain(OpMode opMode) {
@@ -57,46 +60,49 @@ public class MecanumDrivetrain {
             _rightBack.setDirection(DcMotor.Direction.REVERSE);
         }
 
-        _telemetryHelper.initMotorTelemetry( _leftFront, "LF");
-        _telemetryHelper.initMotorTelemetry( _leftBack, "LB");
-        _telemetryHelper.initMotorTelemetry( _rightFront, "RF");
-        _telemetryHelper.initMotorTelemetry( _rightBack, "RB");
+//        _telemetryHelper.initMotorTelemetry( _leftFront, "LF");
+//        _telemetryHelper.initMotorTelemetry( _leftBack, "LB");
+//        _telemetryHelper.initMotorTelemetry( _rightFront, "RF");
+//        _telemetryHelper.initMotorTelemetry( _rightBack, "RB");
 //        opMode.telemetry.addData("Error X", ()->getErrorX(pinpoint.getPositionRR()));
 //        opMode.telemetry.addData("Error Y", ()->getErrorY(pinpoint.getPositionRR()));
 //        opMode.telemetry.addData("Error Yaw", ()->getErrorYaw(pinpoint.getPositionRR()));
 //        opMode.telemetry.addData("LF", ()-> calMotorPowers(previousPose, targetPose)[0]);
 //        opMode.telemetry.addData("RF", ()-> calMotorPowers(previousPose, targetPose)[1]);
 //        opMode.telemetry.addData("LB", ()-> calMotorPowers(previousPose, targetPose)[2]);
-//        opMode.telemetry.addData("RB", ()-> calMotorPowers(previousPose, targetPose)[3]);
+        opMode.telemetry.addData("Distance Error", ()-> distanceError);
+        opMode.telemetry.addData("TeleAuto Power", ()-> maxTeleAutoPower);
+        opMode.telemetry.addData("Is Slowdown Power", ()-> { return distanceError < targetSlowDownDistance;});
+
 
     }
-    private double getErrorX(Pose2d currentPose) {
-        if (currentPose == null) {
-            return 0;
-        }
-
-        //get error from pinpoint stuff
-        double errorX = basketDropTargetPose.position.x - currentPose.position.x;
-        return errorX;
-    }
-    private double getErrorY(Pose2d currentPose) {
-        if (currentPose == null) {
-            return 0;
-        }
-
-        //get error from pinpoint stuff
-        double errorY = basketDropTargetPose.position.y - currentPose.position.y;
-        return errorY;
-    }
-    private double getErrorYaw(Pose2d currentPose) {
-        if (currentPose == null) {
-            return 0;
-        }
-
-        //get error from pinpoint stuff
-        double errorYaw = Math.toDegrees(basketDropTargetPose.heading.toDouble()) - Math.toDegrees(currentPose.heading.toDouble());
-        return errorYaw;
-    }
+//    private double getErrorX(Pose2d currentPose) {
+//        if (currentPose == null) {
+//            return 0;
+//        }
+//
+//        //get error from pinpoint stuff
+//        double errorX = basketDropTargetPose.position.x - currentPose.position.x;
+//        return errorX;
+//    }
+//    private double getErrorY(Pose2d currentPose) {
+//        if (currentPose == null) {
+//            return 0;
+//        }
+//
+//        //get error from pinpoint stuff
+//        double errorY = basketDropTargetPose.position.y - currentPose.position.y;
+//        return errorY;
+//    }
+//    private double getErrorYaw(Pose2d currentPose) {
+//        if (currentPose == null) {
+//            return 0;
+//        }
+//
+//        //get error from pinpoint stuff
+//        double errorYaw = Math.toDegrees(basketDropTargetPose.heading.toDouble()) - Math.toDegrees(currentPose.heading.toDouble());
+//        return errorYaw;
+//    }
     public void Drive() {
         double drive;
         double turn;
@@ -145,6 +151,7 @@ public class MecanumDrivetrain {
         }
         if (targetPose == null){
             //manual teleop drive
+            distanceError = 0;
             drive = gamepad1.left_stick_y;
             turn = turnSpeedMultiplier * (Math.pow((gamepad1.right_stick_x * -1), turnEasingExponet) + (Math.signum(gamepad1.right_stick_x * -1) * turnEasingYIntercept));
             strafe = gamepad1.left_stick_x * -1;
@@ -220,9 +227,9 @@ public class MecanumDrivetrain {
         //get error from pinpoint stuff
         double errorX = targetPose.position.x - currentPose.position.x;
         double errorY = targetPose.position.y - currentPose.position.y;
-        double distanceError = Math.hypot(errorX, errorY);
+        distanceError = Math.hypot(errorX, errorY);
         double maxDrive = 1;
-        double targetSlowDownDistance = 24;
+
         double minDrive = 0.10;
         /*
          * For a mecanum drive, we want to translate the field-centric error vector into
@@ -256,21 +263,27 @@ public class MecanumDrivetrain {
             leftFrontPower = -leftFrontPower;
             rightBackPower = -rightBackPower;
             // Normalize wheel powers to be less than 1.0
-            double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-            max = Math.max(max, Math.abs(leftBackPower));
-            max = Math.max(max, Math.abs(rightBackPower));
+            maxTeleAutoPower = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+            maxTeleAutoPower = Math.max(maxTeleAutoPower, Math.abs(leftBackPower));
+            maxTeleAutoPower = Math.max(maxTeleAutoPower, Math.abs(rightBackPower));
 
             if (distanceError < targetSlowDownDistance) {
-                maxDrive = Math.pow(distanceError, 2) / Math.pow(targetSlowDownDistance, 2);
-                maxDrive = Math.max(maxDrive, minDrive);
+                //maxDrive = Math.pow(distanceError, 2) / Math.pow(targetSlowDownDistance, 2);
+                //maxDrive = Math.max(maxDrive, minDrive);
+                maxDrive = minDrive;
+                maxTeleAutoPower = maxDrive;
+                leftFrontPower /= maxDrive;
+                rightFrontPower /= maxDrive;
+                leftBackPower /= maxDrive;
+                rightBackPower /= maxDrive;
             } else {
                 maxDrive = 1;
             }
-            if (max > maxDrive) {
-                leftFrontPower /= max;
-                rightFrontPower /= max;
-                leftBackPower /= max;
-                rightBackPower /= max;
+            if (maxTeleAutoPower > maxDrive) {
+                leftFrontPower /= maxTeleAutoPower;
+                rightFrontPower /= maxTeleAutoPower;
+                leftBackPower /= maxTeleAutoPower;
+                rightBackPower /= maxTeleAutoPower;
             }
 
 
