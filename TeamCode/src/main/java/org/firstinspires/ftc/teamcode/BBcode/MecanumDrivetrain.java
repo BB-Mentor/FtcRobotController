@@ -28,7 +28,7 @@ public class MecanumDrivetrain {
     private static final Pose2d dropPose = RedBasketPose.drop;
     private static final Pose2d basketDropTargetPose = new Pose2d(dropPose.position.x+1.5, dropPose.position.y+1.5, dropPose.heading.toDouble());
     private static final Pose2d specimenGrabTargetPose = new Pose2d(38,-58, Math.toRadians(0));
-    private static final double kpTranslation = 0.07;
+    private static final double kpTranslation = 0.2;
     private static final double kpRotation = .7;
     private static final double angleToleranceDeg = 1;
     private static final double distanceToleranceInch = .25;
@@ -230,7 +230,7 @@ public class MecanumDrivetrain {
         distanceError = Math.hypot(errorX, errorY);
         double maxDrive = 1;
 
-        double minDrive = 0.10;
+        double minDrive = 0.20;
         /*
          * For a mecanum drive, we want to translate the field-centric error vector into
          * robot–centric coordinates. To do this, rotate the error vector by the negative
@@ -266,25 +266,34 @@ public class MecanumDrivetrain {
             maxTeleAutoPower = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
             maxTeleAutoPower = Math.max(maxTeleAutoPower, Math.abs(leftBackPower));
             maxTeleAutoPower = Math.max(maxTeleAutoPower, Math.abs(rightBackPower));
+            maxTeleAutoPower = Math.min(maxTeleAutoPower, maxDrive);
 
             if (distanceError < targetSlowDownDistance) {
-                //maxDrive = Math.pow(distanceError, 2) / Math.pow(targetSlowDownDistance, 2);
-                //maxDrive = Math.max(maxDrive, minDrive);
-                maxDrive = minDrive;
-                maxTeleAutoPower = maxDrive;
-                leftFrontPower /= maxDrive;
-                rightFrontPower /= maxDrive;
-                leftBackPower /= maxDrive;
-                rightBackPower /= maxDrive;
+                double slowDrive = minDrive;
+                //slowDrive = Math.pow(distanceError, 2) / Math.pow(targetSlowDownDistance, 2);
+                //slowDrive = Math.max(maxDrive, minDrive);
+// Scale the motor powers if the maximum power is greater than maxTeleAutoPower
+                if (maxTeleAutoPower > slowDrive) {
+                    leftFrontPower = (leftFrontPower / maxTeleAutoPower) * slowDrive;
+                    rightFrontPower = (rightFrontPower / maxTeleAutoPower) * slowDrive;
+                    leftBackPower = (leftBackPower / maxTeleAutoPower) * slowDrive;
+                    rightBackPower = (rightBackPower / maxTeleAutoPower) * slowDrive;
+                }
+//                if (maxDrive > maxDrive) {
+//                    leftFrontPower /= slowDrive;
+//                    rightFrontPower /= slowDrive;
+//                    leftBackPower /= slowDrive;
+//                    rightBackPower /= slowDrive;
+//                }
             } else {
-                maxDrive = 1;
+                if (maxTeleAutoPower > maxDrive) {
+                    leftFrontPower /= maxTeleAutoPower;
+                    rightFrontPower /= maxTeleAutoPower;
+                    leftBackPower /= maxTeleAutoPower;
+                    rightBackPower /= maxTeleAutoPower;
+                }
             }
-            if (maxTeleAutoPower > maxDrive) {
-                leftFrontPower /= maxTeleAutoPower;
-                rightFrontPower /= maxTeleAutoPower;
-                leftBackPower /= maxTeleAutoPower;
-                rightBackPower /= maxTeleAutoPower;
-            }
+
 
 
             // Return the motor powers.
